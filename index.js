@@ -45,8 +45,12 @@ function fakeModel() {
 // ============================================================
 function buildContext() {
   return {
-    // fill this in: title, currentSeverity, service, timeline...
-    // but NOT reporterEmail or internalToken
+    id: incident.id,
+    title: incident.title,
+    currentSeverity: incident.currentSeverity,
+    service: incident.service,
+    timeline: timeline
+    // reporterEmail and internalToken are intentionally excluded
   };
 }
 
@@ -56,7 +60,13 @@ function buildContext() {
 // AND there is a non-empty reason.
 // ============================================================
 function isValid(answer) {
-  return false; // fill this in
+  return (
+    answer !== null &&
+    typeof answer === 'object' &&
+    SEVERITIES.includes(answer.suggestedSeverity) &&
+    typeof answer.reason === 'string' &&
+    answer.reason.trim().length > 0
+  );
 }
 
 // ============================================================
@@ -64,7 +74,10 @@ function isValid(answer) {
 // Return a short message so the workflow still makes sense.
 // ============================================================
 function fallback() {
-  return { status: 'MANUAL_REVIEW', message: '' /* fill this in */ };
+  return {
+    status: 'MANUAL_REVIEW',
+    message: 'AI suggestion unavailable or invalid — please review and set severity manually.'
+  };
 }
 
 // ── Given to you: runs one request start to finish. ──
